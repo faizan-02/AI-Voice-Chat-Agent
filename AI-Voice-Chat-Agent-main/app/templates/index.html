@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="default-character" content="customer_support">
+    <title>Voice Chat AI</title>
+    <link rel="stylesheet" href="/app/static/css/styles.css">
+    <link rel="icon" href="/app/static/favicon.ico" type="image/x-icon">
+    <style>
+        /* chat-panel is the left grid column: stacks controls → status → conversation */
+        .chat-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 0;
+        }
+        /* Remove default bottom margins from children inside chat-panel */
+        .chat-panel .controls      { margin-bottom: 0; }
+        .chat-panel .status-bar    { margin-bottom: 0; }
+        .chat-panel #conversation  { margin-bottom: 0; }
+
+        /* Settings toggle button */
+        .settings-toggle {
+            background: none;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 0.82rem;
+            font-weight: 500;
+            padding: 5px 14px;
+            margin-bottom: 0.5rem;
+            max-width: none;
+            flex-grow: 0;
+            align-self: flex-start;
+        }
+        .settings-toggle:hover { color: var(--text); border-color: var(--primary); }
+
+        /* Settings body hidden/shown */
+        .settings.hidden { display: none; }
+
+        @media (max-width: 768px) {
+            .chat-panel { gap: 6px; }
+        }
+        .header-controls #theme-toggle    { margin-top: 0; }
+        .header-controls #download-button { margin-top: 0; }
+
+        /* Clickable service items */
+        .spa-service-item {
+            cursor: pointer;
+            border-radius: 4px;
+            padding: 2px 4px;
+            transition: background 0.15s, color 0.15s;
+        }
+        .spa-service-item:hover { background: var(--primary); color: #fff; opacity: 0.85; }
+        .spa-service-item.selected {
+            background: var(--primary);
+            color: #fff;
+            font-weight: 600;
+            border-radius: 4px;
+            padding: 2px 4px;
+        }
+
+        /* Service Done button */
+        .service-done-btn {
+            width: 100%;
+            padding: 10px;
+            border-radius: 999px;
+            border: none;
+            background: linear-gradient(135deg, var(--green), #27ae60);
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.88rem;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .service-done-btn:hover { opacity: 0.85; }
+
+        /* Time picker */
+        .spa-time-picker {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 8px;
+        }
+        .spa-time-slot {
+            padding: 5px 10px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text-muted);
+            font-size: 0.78rem;
+            cursor: pointer;
+            transition: all 0.18s ease;
+        }
+        .spa-time-slot:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(124,143,255,0.08);
+        }
+        .spa-time-slot.selected {
+            background: linear-gradient(135deg, var(--accent), #9b59b6);
+            border-color: transparent;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        /* Booking summary card */
+        .booking-summary-card {
+            background: linear-gradient(135deg, rgba(76,222,128,0.1), rgba(124,143,255,0.1));
+            border: 1px solid var(--green);
+            border-radius: 10px;
+            padding: 0.75rem;
+            font-size: 0.85rem;
+        }
+        .booking-summary-card .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 3px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .booking-summary-card .summary-row:last-child { border-bottom: none; }
+        .booking-summary-card .summary-label { color: var(--text-muted); font-weight: 600; }
+        .booking-summary-card .summary-value { color: var(--green); font-weight: 500; }
+        .booking-summary-card .summary-row.total-row { border-top: 1px solid var(--green); margin-top: 4px; padding-top: 8px; }
+        .booking-summary-card .summary-row.total-row .summary-label { color: var(--text); font-weight: 700; }
+        .booking-summary-card .summary-row.total-row .summary-value { color: var(--green); font-weight: 700; font-size: 1rem; }
+    </style>
+</head>
+<body class="dark-mode">
+    <header>
+        <h1>
+            Voice Chat AI
+            <div id="mic-icon" class="mic-off">&#x1F399;</div>
+        </h1>
+        <div class="header-controls">
+            <div class="button-group" style="display:flex;gap:8px;align-items:center;">
+                <button id="theme-toggle" aria-label="Toggle dark/light mode">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </button>
+                <button id="download-button" aria-label="Download conversation history" title="Download conversation history">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                </button>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="/" class="active">Beauty Salon AI Agent</a></li>
+                    <li><a href="/enhanced">Other AI Agents</a></li>
+                    <li><a href="/webrtc_realtime">Realtime</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- Two-column grid (defined in styles.css: 2.2fr / 1.4fr) -->
+        <div class="main-layout">
+
+            <!-- Left column: controls → status → conversation -->
+            <div class="chat-panel">
+                <div class="controls">
+                    <button id="start-conversation-btn" class="btn-start btn-active">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:5px"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                        Start
+                    </button>
+                    <button id="stop-conversation-btn" class="btn-stop" disabled>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:5px"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+                        End
+                    </button>
+                    <button id="clear-conversation-btn" class="btn-clear">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:5px"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+                        Clear
+                    </button>
+                </div>
+
+                <div id="status-bar" class="status-bar status-idle">
+                    <span class="status-dot">○</span>
+                    <span class="status-label">Ready — press Start to begin</span>
+                </div>
+
+                <div id="conversation">
+                    <div id="messages"></div>
+                    <div id="voice-animation" class="hidden">
+                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="8"/>
+                            <g id="voice-bars">
+                                <rect x="30" y="35" width="8" height="30" rx="4"/>
+                                <rect x="46" y="25" width="8" height="50" rx="4"/>
+                                <rect x="62" y="35" width="8" height="30" rx="4"/>
+                            </g>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right column: spa sidebar (only shown for customer_support) -->
+            <aside id="spa-sidebar" class="spa-sidebar hidden">
+                <h2>Islamabad Spa Salon</h2>
+                <p class="spa-tagline">Bookings, prices, and availability with Sara.</p>
+
+                <section class="spa-section">
+                    <h3>Quick Booking Calendar</h3>
+                    <div id="spa-today" class="spa-today"></div>
+                    <div id="spa-calendar" class="spa-calendar"></div>
+                    <div id="spa-selected-date" class="spa-selected-date">Select a date and tell Sara.</div>
+                </section>
+
+                <section class="spa-section">
+                    <h3>Preferred Time</h3>
+                    <div id="spa-time-picker" class="spa-time-picker"></div>
+                    <div id="spa-selected-time" class="spa-selected-date">Select a time or tell Sara.</div>
+                </section>
+
+                <section class="spa-section">
+                    <h3>Services &amp; Prices (PKR)</h3>
+                    <div class="spa-services">
+                        <div class="spa-service-card">
+                            <h4>Massages</h4>
+                            <ul>
+                                <li class="spa-service-item" data-service="Classic Swedish Massage" data-price="7,500 PKR" data-duration="60 min">Classic Swedish – 60 min – 7,500</li>
+                                <li class="spa-service-item" data-service="Deep Tissue Massage" data-price="8,500 PKR" data-duration="60 min">Deep Tissue – 60 min – 8,500</li>
+                                <li class="spa-service-item" data-service="Aromatherapy Massage" data-price="11,500 PKR" data-duration="90 min">Aromatherapy – 90 min – 11,500</li>
+                            </ul>
+                        </div>
+                        <div class="spa-service-card">
+                            <h4>Facials</h4>
+                            <ul>
+                                <li class="spa-service-item" data-service="Glow Facial" data-price="6,000 PKR" data-duration="60 min">Glow Facial – 60 min – 6,000</li>
+                                <li class="spa-service-item" data-service="Hydrating Facial" data-price="7,500 PKR" data-duration="75 min">Hydrating Facial – 75 min – 7,500</li>
+                                <li class="spa-service-item" data-service="Anti-Aging Facial" data-price="9,500 PKR" data-duration="90 min">Anti‑Aging – 90 min – 9,500</li>
+                            </ul>
+                        </div>
+                        <div class="spa-service-card">
+                            <h4>Hair</h4>
+                            <ul>
+                                <li class="spa-service-item" data-service="Haircut & Blow-dry" data-price="from 4,000 PKR">Cut &amp; Blow‑dry – from 4,000</li>
+                                <li class="spa-service-item" data-service="Root Touch-up" data-price="from 5,500 PKR">Root Touch‑up – from 5,500</li>
+                                <li class="spa-service-item" data-service="Full Color" data-price="from 8,500 PKR">Full Color – from 8,500</li>
+                            </ul>
+                        </div>
+                        <div class="spa-service-card">
+                            <h4>Nails &amp; Packages</h4>
+                            <ul>
+                                <li class="spa-service-item" data-service="Classic Manicure" data-price="2,800 PKR">Manicure – 2,800</li>
+                                <li class="spa-service-item" data-service="Classic Pedicure" data-price="3,200 PKR">Pedicure – 3,200</li>
+                                <li class="spa-service-item" data-service="Relax & Glow Package" data-price="13,000 PKR">Relax &amp; Glow – 13,000</li>
+                                <li class="spa-service-item" data-service="Full Pamper Day" data-price="19,500 PKR">Full Pamper Day – 19,500</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <p class="spa-hint">Tap one or more services, then press <strong>Done</strong>.</p>
+                    <div id="service-done-wrap" style="display:none; margin-top:10px;">
+                        <button id="service-done-btn" class="service-done-btn">✓ Done — confirm selection</button>
+                    </div>
+                </section>
+                <section class="spa-section" id="booking-summary-section" style="display:none;">
+                    <h3>Booking Summary</h3>
+                    <div id="booking-summary-card" class="booking-summary-card">
+                        <div id="booking-summary-content"></div>
+                        <p class="spa-hint">Our team will confirm by call or WhatsApp.</p>
+                    </div>
+                </section>
+            </aside>
+
+        </div><!-- /.main-layout -->
+
+        <!-- Settings (collapsible) -->
+        <button class="settings-toggle" id="settings-toggle-btn">⚙ Settings</button>
+        <div class="settings hidden" id="settings-body">
+            <div class="setting-group">
+                <label for="character-select">Character</label>
+                <select id="character-select"></select>
+            </div>
+            <div class="setting-group">
+                <label for="provider-select">Model Provider</label>
+                <select id="provider-select">
+                    <option value="openai">OpenAI</option>
+                    <option value="ollama">Ollama</option>
+                    <option value="xai">XAI</option>
+                    <option value="anthropic">Anthropic</option>
+                </select>
+            </div>
+            <div class="setting-group">
+                <label for="tts-select">TTS Provider</label>
+                <select id="tts-select" data-initial="{{ tts_provider }}">
+                    <option value="openai">OpenAI</option>
+                    <option value="elevenlabs">ElevenLabs</option>
+                    <option value="kokoro">Kokoro-TTS</option>
+                    <option value="sparktts">Spark-TTS (Local)</option>
+                </select>
+            </div>
+            <div class="setting-group">
+                <label for="openai-voice-select">OpenAI Voice</label>
+                <select id="openai-voice-select">
+                    <option value="alloy">Alloy - female</option>
+                    <option value="echo">Echo - male</option>
+                    <option value="fable">Fable - male</option>
+                    <option value="onyx">Onyx - male</option>
+                    <option value="nova">Nova - female</option>
+                    <option value="shimmer">Shimmer - female</option>
+                    <option value="sage">Sage - female</option>
+                    <option value="coral">Coral - female</option>
+                    <option value="ash">Ash - male</option>
+                </select>
+            </div>
+            <div class="setting-group">
+                <label for="elevenlabs-voice-select">ElevenLabs Voice</label>
+                <select id="elevenlabs-voice-select"></select>
+            </div>
+            <div class="setting-group">
+                <label for="kokoro-voice-select">Kokoro Voice</label>
+                <select id="kokoro-voice-select"></select>
+            </div>
+            <div class="setting-group">
+                <label for="openai-model-select">OpenAI Model</label>
+                <select id="openai-model-select">
+                    <option value="gpt-4o">GPT-4o</option>
+                    <option value="gpt-4o-mini">GPT-4o-mini</option>
+                </select>
+            </div>
+            <div class="setting-group">
+                <label for="ollama-model-select">Ollama Model</label>
+                <select id="ollama-model-select">
+                    <option value="llama3.2">Select Ollama to Load</option>
+                </select>
+            </div>
+            <div class="setting-group">
+                <label for="xai-model-select">XAI Model</label>
+                <select id="xai-model-select">
+                    <option value="grok-2-1212">Grok 2-1212</option>
+                    <option value="grok-3">Grok 3</option>
+                </select>
+            </div>
+            <div class="setting-group">
+                <label for="anthropic-model-select">Anthropic Model</label>
+                <select id="anthropic-model-select">
+                    <option value="claude-sonnet-4-6">Claude Sonnet 4.6</option>
+                    <option value="claude-sonnet-4-5">Claude Sonnet 4.5</option>
+                    <option value="claude-3-7-sonnet-20250219">Claude 3.7 Sonnet</option>
+                </select>
+            </div>
+            <div class="setting-group">
+                <label for="voice-speed-select">Voice Speed</label>
+                <select id="voice-speed-select">
+                    <option value="0.7">0.7</option>
+                    <option value="0.9">0.9</option>
+                    <option value="1.0">1.0 (Normal)</option>
+                    <option value="1.1">1.1</option>
+                    <option value="1.2">1.2</option>
+                </select>
+            </div>
+            <div class="setting-group">
+                <label for="transcription-select">Transcription</label>
+                <select id="transcription-select">
+                    {% if faster_whisper_local %}
+                    <option value="local_whisper" selected>Local Faster Whisper</option>
+                    <option value="gpt-4o-mini-transcribe">OpenAI GPT-4o Mini</option>
+                    <option value="gpt-4o-transcribe">OpenAI GPT-4o</option>
+                    <option value="whisper-1">OpenAI Whisper-1</option>
+                    {% else %}
+                    <option value="gpt-4o-mini-transcribe" selected>OpenAI GPT-4o Mini</option>
+                    <option value="gpt-4o-transcribe">OpenAI GPT-4o</option>
+                    <option value="whisper-1">OpenAI Whisper-1</option>
+                    <option value="local_whisper">Local Faster Whisper</option>
+                    {% endif %}
+                </select>
+            </div>
+        </div><!-- /#settings-body -->
+    </main>
+
+    <script src="/app/static/js/scripts.js?v=20260316d"></script>
+    <script>
+        // Settings toggle
+        document.getElementById('settings-toggle-btn').addEventListener('click', function() {
+            const s = document.getElementById('settings-body');
+            const open = s.classList.toggle('hidden') === false;
+            this.textContent = open ? '✕ Close Settings' : '⚙ Settings';
+        });
+        // Fix toggle: starts hidden, so first click opens
+        // (hidden class is on by default above)
+
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch('/elevenlabs_voices')
+                .then(r => r.json())
+                .then(data => {
+                    const sel = document.getElementById('elevenlabs-voice-select');
+                    const def = document.createElement('option');
+                    def.value = ''; def.text = 'Default Voice';
+                    sel.add(def);
+                    (data.voices || []).forEach(v => {
+                        const opt = document.createElement('option');
+                        opt.value = v.id; opt.text = v.name;
+                        sel.add(opt);
+                    });
+                    sel.value = "{{ elevenlabs_voice }}";
+                }).catch(() => {});
+
+            document.getElementById('provider-select').value    = "{{ model_provider }}";
+            document.getElementById('tts-select').value         = "{{ tts_provider }}";
+            document.getElementById('openai-voice-select').value = "{{ openai_tts_voice }}";
+            document.getElementById('openai-model-select').value = "{{ openai_model }}";
+            document.getElementById('ollama-model-select').value = "{{ ollama_model }}";
+            document.getElementById('voice-speed-select').value  = "{{ voice_speed }}";
+
+            setTimeout(() => {
+                const k = document.getElementById('kokoro-voice-select');
+                if (k && k.options.length > 0) k.value = "{{ kokoro_voice }}";
+            }, 300);
+        });
+    </script>
+</body>
+</html>
