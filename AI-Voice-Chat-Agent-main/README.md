@@ -579,7 +579,7 @@ http://localhost:8000/
 
 ## OpenAI Enhanced
 
-![Image](https://github.com/user-attachments/assets/5c62bbfc-7f1d-48a8-8a83-4a2488a1bc0b)
+![AI Voice Chat Agent](assets/screenshot.png)
 
 OpenAI Enhanced Mode is a new feature that allows you to use the OpenAI API to generate TTS and transcription. It uses the `gpt-4o-mini-tts` and `gpt-4o-mini-transcribe` models.
 You can learn more about it here: https://platform.openai.com/docs/guides/text-to-speech
@@ -594,7 +594,7 @@ The OpenAI Realtime feature uses WebRTC to connect directly to OpenAI's Realtime
 
 ### RealTime Features
 
-https://github.com/user-attachments/assets/d1cc9ca4-e750-4c36-816e-6f27b8caeec1
+<video src="assets/demo.mp4" controls width="100%"></video>
 
 - **Direct WebRTC Connection**: Connect directly to OpenAI's API for the lowest possible latency.
 - **Zero Turn-Taking**: No need to wait for the AI to finish before speaking - interrupt naturally like a real conversation.
@@ -734,11 +734,9 @@ This will let it use the system's /usr/lib/x86_64-linux-gnu/libstdc++.so.6 inste
 
 </details>
 
-## Watch the Demos
+## Watch the Demo
 
-OpenAI RealTime
-
-https://github.com/user-attachments/assets/d6ed3c62-fe07-418c-9708-673f21fcf5c2
+<video src="assets/demo.mp4" controls width="100%"></video>
 
 ---
 
