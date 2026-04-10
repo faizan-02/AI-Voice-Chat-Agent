@@ -61,8 +61,8 @@ Get up and running fast with Voice Chat AI! 🔊
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/bigsk1/voice-chat-ai.git
-   cd voice-chat-ai
+   git clone https://github.com/TheHydraBytes/AI-Voice-Agent.git
+   cd AI-Voice-Agent
    ```
 
 2. Create a virtual environment: 🐍
@@ -77,8 +77,8 @@ Get up and running fast with Voice Chat AI! 🔊
    or use `conda` just make it python 3.11
 
    ```bash
-   conda create --name voice-chat-ai python=3.11
-   conda activate voice-chat-ai
+   conda create --name ai-voice-agent python=3.11
+   conda activate ai-voice-agent
    ```
 
 3. Install dependencies:
@@ -212,9 +212,9 @@ uncomment the lines needed in the docker-compose.yml depending on your host syst
 
 ```yaml
 services:
-  voice-chat-ai:
-    image: bigsk1/voice-chat-ai:latest
-    container_name: voice-chat-ai
+  ai-voice-agent:
+    image: thehydrabytes/ai-voice-agent:latest
+    container_name: ai-voice-agent
     environment:
       - PULSE_SERVER=/mnt/wslg/PulseServer  # Default: WSL2 PulseAudio server (Windows CMD or WSL2 Ubuntu)
       # - PULSE_SERVER=unix:/tmp/pulse/native  # Uncomment for native Ubuntu/Debian with PulseAudio
@@ -244,13 +244,13 @@ docker-compose up -d
 > Remove the elevenlabs_voices.json volume mount if not using ElevenLabs.
 
 ```bash
-docker pull bigsk1/voice-chat-ai:latest
+docker pull thehydrabytes/ai-voice-agent:latest
 ```
 
 or
 
 ```bash
-docker build -t voice-chat-ai -f Dockerfile.cpu .
+docker build -t ai-voice-agent -f Dockerfile.cpu .
 ```
 
 In Windows command prompt
@@ -261,13 +261,13 @@ docker run -d
    -v \\wsl$\Ubuntu\mnt\wslg:/mnt/wslg/
    -v ./elevenlabs_voices.json:/app/elevenlabs_voices.json
    --env-file .env
-   --name voice-chat-ai
+   --name ai-voice-agent
    -p 8000:8000
-   bigsk1/voice-chat-ai:latest
+   thehydrabytes/ai-voice-agent:latest
 ```
 
 ```bash
-docker run -d -e "PULSE_SERVER=/mnt/wslg/PulseServer" -v \\wsl$\Ubuntu\mnt\wslg:/mnt/wslg/ -v %cd%\elevenlabs_voices.json:/app/elevenlabs_voices.json --env-file .env --name voice-chat-ai -p 8000:8000 bigsk1/voice-chat-ai:latest
+docker run -d -e "PULSE_SERVER=/mnt/wslg/PulseServer" -v \\wsl$\Ubuntu\mnt\wslg:/mnt/wslg/ -v %cd%\elevenlabs_voices.json:/app/elevenlabs_voices.json --env-file .env --name ai-voice-agent -p 8000:8000 thehydrabytes/ai-voice-agent:latest
 ```
 
 In WSL2 Ubuntu
@@ -278,13 +278,13 @@ docker run -d \
     -v /mnt/wslg/:/mnt/wslg/ \
     -v ./elevenlabs_voices.json:/app/elevenlabs_voices.json \
     --env-file .env \
-    --name voice-chat-ai \
+    --name ai-voice-agent \
     -p 8000:8000 \
-    bigsk1/voice-chat-ai:latest
+    thehydrabytes/ai-voice-agent:latest
 ```
 
 ```bash
-docker run -d -e "PULSE_SERVER=/mnt/wslg/PulseServer" -v /mnt/wslg/:/mnt/wslg/ -v ./elevenlabs_voices.json:/app/elevenlabs_voices.json --env-file .env --name voice-chat-ai -p 8000:8000 bigsk1/voice-chat-ai:latest
+docker run -d -e "PULSE_SERVER=/mnt/wslg/PulseServer" -v /mnt/wslg/:/mnt/wslg/ -v ./elevenlabs_voices.json:/app/elevenlabs_voices.json --env-file .env --name ai-voice-agent -p 8000:8000 thehydrabytes/ai-voice-agent:latest
 ```
 
 ### Nvidia Cuda docker image
@@ -306,10 +306,10 @@ make sure .env is in same folder you are running this from
 > Remove the elevenlabs_voices.json volume mount if not using ElevenLabs.
 
 ```bash
-docker run -d --gpus all -e "PULSE_SERVER=/mnt/wslg/PulseServer" -v \\wsl$\Ubuntu\mnt\wslg:/mnt/wslg/ -v %cd%\elevenlabs_voices.json:/app/elevenlabs_voices.json --env-file .env --name voice-chat-ai-cuda -p 8000:8000 bigsk1/voice-chat-ai:cuda
+docker run -d --gpus all -e "PULSE_SERVER=/mnt/wslg/PulseServer" -v \\wsl$\Ubuntu\mnt\wslg:/mnt/wslg/ -v %cd%\elevenlabs_voices.json:/app/elevenlabs_voices.json --env-file .env --name ai-voice-agent-cuda -p 8000:8000 thehydrabytes/ai-voice-agent:cuda
 ```
 
-Use `docker logs -f voice-chat-ai-cuda` to see the logs
+Use `docker logs -f ai-voice-agent-cuda` to see the logs
 
 ## 🐧 Run on WSL Native - best option
 
@@ -325,13 +325,13 @@ docker run -d --gpus all \
     -v /mnt/wslg/:/mnt/wslg/ \
     -v ./elevenlabs_voices.json:/app/elevenlabs_voices.json \
     --env-file .env \
-    --name voice-chat-ai-cuda \
+    --name ai-voice-agent-cuda \
     -p 8000:8000 \
-    bigsk1/voice-chat-ai:cuda
+    thehydrabytes/ai-voice-agent:cuda
 ```
 
 ```bash
-docker run -d --gpus all -e "PULSE_SERVER=/mnt/wslg/PulseServer" -v /mnt/wslg/:/mnt/wslg/ -v ./elevenlabs_voices.json:/app/elevenlabs_voices.json --env-file .env --name voice-chat-ai-cuda -p 8000:8000 bigsk1/voice-chat-ai:cuda
+docker run -d --gpus all -e "PULSE_SERVER=/mnt/wslg/PulseServer" -v /mnt/wslg/:/mnt/wslg/ -v ./elevenlabs_voices.json:/app/elevenlabs_voices.json --env-file .env --name ai-voice-agent-cuda -p 8000:8000 thehydrabytes/ai-voice-agent:cuda
 ```
 
 ## 🐧 Run on Ubuntu/Debian
@@ -343,13 +343,13 @@ docker run -d --gpus all \
     -v /run/user/$(id -u)/pulse:/tmp/pulse:ro \
     -v ./elevenlabs_voices.json:/app/elevenlabs_voices.json \
     --env-file .env \
-    --name voice-chat-ai-cuda \
+    --name ai-voice-agent-cuda \
     -p 8000:8000 \
-    bigsk1/voice-chat-ai:cuda
+    thehydrabytes/ai-voice-agent:cuda
 ```
 
 ```bash
-docker run -d --gpus all -e PULSE_SERVER=unix:/tmp/pulse/native -v ~/.config/pulse/cookie:/root/.config/pulse/cookie:ro -v /run/user/$(id -u)/pulse:/tmp/pulse:ro -v ./elevenlabs_voices.json:/app/elevenlabs_voices.json --env-file .env --name voice-chat-ai-cuda -p 8000:8000 bigsk1/voice-chat-ai:cuda
+docker run -d --gpus all -e PULSE_SERVER=unix:/tmp/pulse/native -v ~/.config/pulse/cookie:/root/.config/pulse/cookie:ro -v /run/user/$(id -u)/pulse:/tmp/pulse:ro -v ./elevenlabs_voices.json:/app/elevenlabs_voices.json --env-file .env --name ai-voice-agent-cuda -p 8000:8000 thehydrabytes/ai-voice-agent:cuda
 ```
 
 🔗 Access the Application
@@ -358,29 +358,29 @@ URL: http://localhost:8000
 To remove use:
 
 ```bash
-docker stop voice-chat-ai-cuda
+docker stop ai-voice-agent-cuda
 ```
 
 ```bash
-docker rm voice-chat-ai-cuda
+docker rm ai-voice-agent-cuda
 ```
 
 ### Build it yourself using Nvidia Cuda
 
 ```bash
-docker build -t voice-chat-ai:cuda .
+docker build -t ai-voice-agent:cuda .
 ```
 
 Running in WSL Ubuntu
 
 ```bash
-wsl docker run -d --gpus all -e "PULSE_SERVER=/mnt/wslg/PulseServer" -v /mnt/wslg/:/mnt/wslg/ -v ./elevenlabs_voices.json:/app/elevenlabs_voices.json --env-file .env --name voice-chat-ai-cuda -p 8000:8000 voice-chat-ai:cuda
+wsl docker run -d --gpus all -e "PULSE_SERVER=/mnt/wslg/PulseServer" -v /mnt/wslg/:/mnt/wslg/ -v ./elevenlabs_voices.json:/app/elevenlabs_voices.json --env-file .env --name ai-voice-agent-cuda -p 8000:8000 ai-voice-agent:cuda
 ```
 
 On windows docker desktop using wsl - run in windows
 
 ```bash
-docker run -d --gpus all -e "PULSE_SERVER=/mnt/wslg/PulseServer" -v \\wsl$\Ubuntu\mnt\wslg:/mnt/wslg/ -v %cd%\elevenlabs_voices.json:/app/elevenlabs_voices.json --env-file .env --name voice-chat-ai-cuda -p 8000:8000 voice-chat-ai:cuda
+docker run -d --gpus all -e "PULSE_SERVER=/mnt/wslg/PulseServer" -v \\wsl$\Ubuntu\mnt\wslg:/mnt/wslg/ -v %cd%\elevenlabs_voices.json:/app/elevenlabs_voices.json --env-file .env --name ai-voice-agent-cuda -p 8000:8000 ai-voice-agent:cuda
 ```
 
 </details>
@@ -687,7 +687,7 @@ This is for sentiment analysis, based on what you say, you can guide the AI to r
 ### Unanticipated host error OSError 9999
 
 ```bash
-File "C:\Users\someguy\miniconda3\envs\voice-chat-ai\lib\site-packages\pyaudio\__init__.py", line 441, in __init__
+File "C:\Users\user\miniconda3\envs\ai-voice-agent\lib\site-packages\pyaudio\__init__.py", line 441, in __init__
     self._stream = pa.open(**arguments)
 OSError: [Errno -9999] Unanticipated host error
 ```
@@ -767,7 +767,7 @@ Detailed output in terminal while running the app.
 When using Elevenlabs on first start of server you get details about your usage limits to help you know how much you have been using.
 
 ```bash
-(voice-chat-ai) X:\voice-chat-ai>uvicorn app.main:app --host 0.0.0.0 --port 8000
+(ai-voice-agent) X:\AI-Voice-Agent>uvicorn app.main:app --host 0.0.0.0 --port 8000
 
 Switched to ElevenLabs TTS voice: VgPqCpkdPQacBNNIsAqI
 ElevenLabs Character Usage: 33796 / 100027
@@ -803,12 +803,6 @@ Features:
 
 This project is licensed under the MIT License.
 
-## Star History
+---
 
-<a href="https://star-history.com/#bigsk1/voice-chat-ai&Date">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=bigsk1/voice-chat-ai&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=bigsk1/voice-chat-ai&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=bigsk1/voice-chat-ai&type=Date" />
- </picture>
-</a>
+Built by [HydraBytes](https://www.hydrabytes.it.com) — Next-gen digital solutions from Pakistan.
