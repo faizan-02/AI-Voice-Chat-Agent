@@ -1,13 +1,13 @@
 ![Docker support](https://img.shields.io/badge/docker-supported-blue)
-[![License](https://img.shields.io/github/license/bigsk1/voice-chat-ai)](https://github.com/bigsk1/voice-chat-ai/blob/main/LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-# Voice Chat AI 🎙️
+# AI Voice Chat Agent
 
-Voice Chat AI is a project that allows you to interact with different AI characters using speech. You can choose between various characters, each with unique personalities and voices. Have a serious conversation with Albert Einstein or role play with the OS from the movie HER.
+**Real-time voice conversations with 104+ AI characters — powered by OpenAI, Claude, and local models.**
 
-You can run all locally, you can use openai for chat and voice, you can mix between the two. You can use ElevenLabs voices with ollama models all controlled from a Web UI. Use different chat providers like Anthropic, xAI, Ollama, OpenAI.
+Talk to distinct AI characters using your microphone. The agent transcribes your speech, detects your mood, generates a character-appropriate response, and speaks back using high-quality text-to-speech. Supports interactive games, story adventures, OpenAI Realtime API (WebRTC), and fully offline setups via Ollama + Faster-Whisper + Kokoro TTS.
 
-WebRTC Real Time API with OpenAI you can have a real time conversation, interrupt the AI and have instant responses. You can also use OpenAI's new TTS model gpt-4o-mini-tts to make the AI more human like with emotions and expressive voices.
+Built by [HydraBytes](https://www.hydrabytes.it.com) — Next-gen digital solutions from Pakistan.
 
 Check out the game and story documentation:
 - [Games Documentation](docs/games.md): Play interactive games with various game master characters.
