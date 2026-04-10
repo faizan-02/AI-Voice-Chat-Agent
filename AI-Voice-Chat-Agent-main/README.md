@@ -27,7 +27,7 @@ Get up and running fast with Voice Chat AI! 🔊
 - [**Add New Characters**](#adding-new-characters): Add new characters to the project.
 - [**Troubleshooting**](#troubleshooting): Fix common audio or CUDA errors.
 
-![Ai-Speech](https://imagedelivery.net/WfhVb8dSNAAvdXUdMfBuPQ/ed0edfea-265d-4c23-d11d-0b5ba0f02d00/public)
+![AI Voice Chat Agent](assets/screenshot.png)
 
 ## Features
 
@@ -42,7 +42,7 @@ Get up and running fast with Voice Chat AI! 🔊
 - **Interactive Games & Stories**: Enjoy 15+ different game types (word puzzles, trivia, escape rooms) and interactive storytelling adventures.
 - **Docker Support**: Prebuilt image from Docker Hub or build your own image with or without NVIDIA CUDA. Base image runs on CPU with optional Spark-TTS setup.
 
-https://github.com/user-attachments/assets/ea8d401c-83b4-4a45-af2a-0b3a50e1a0be
+<video src="assets/demo.mp4" controls width="100%"></video>
 
 ## Installation
 
