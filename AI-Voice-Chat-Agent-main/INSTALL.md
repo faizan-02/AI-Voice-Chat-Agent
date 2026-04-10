@@ -127,8 +127,8 @@ python setup_sparktts.py
 
 ```bash
 # 1. Create conda environment
-conda create --name voice-chat-ai python=3.11
-conda activate voice-chat-ai
+conda create --name ai-voice-agent python=3.11
+conda activate ai-voice-agent
 
 # 2. Install PyTorch (choose ONE)
 # CPU:

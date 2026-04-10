@@ -98,7 +98,7 @@ pip install "numpy>=1.21.6,<1.28.0"
 
 - Check internet connection
 - Ensure ~5GB free disk space
-- Try manual download from [Hugging Face](https://huggingface.co/bigsk1/Spark-TTS-0.5B)
+- Try manual download from [Hugging Face](https://huggingface.co/SparkAudio/Spark-TTS-0.5B)
 
 ## Alternative TTS Options
 
@@ -111,7 +111,7 @@ Spark-TTS is **optional**. The app also supports:
 ## Files Overview
 
 ```
-voice-chat-ai/
+AI-Voice-Agent/
 ├── sparktts/              # Spark-TTS core modules (integrated)
 ├── cli/                   # SparkTTS class and inference
 ├── download_sparktts_model.py  # Model download script
